@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Dice(props) {
     const styles = {
         backgroundColor: "#59E391"

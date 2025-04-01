@@ -1,24 +1,27 @@
-import React from "react";
+import {useState,useEffect} from "react";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
 import Dice from "./components/Dice";
 
 export default function App() {
- 
 
-  const [dice, setDice] = React.useState(allNewDice());
-  const [tenzies, setTenzies] = React.useState(false);
-  const [seconds, setSeconds] = React.useState(0);
-  const [minutes, setMinutes] = React.useState(0);
-  const [hours, setHours] = React.useState(0);
-  const [time, setTime] = React.useState(`0${hours}:0${minutes}:0${seconds}`);
-  const [hasRunOnce, setHasRunOnce] = React.useState(false);
-  const [count,setCount] = React.useState(0)
+  const [dice, setDice] = useState(allNewDice());
+  const [tenzies, setTenzies] = useState(false);
+  const [time, setTime] =  useState(0);
+  const [hasRunOnce, setHasRunOnce] =  useState(false);
+  const [count,setCount] =  useState(0)
   const highScore = localStorage.getItem("highScore") || "00:00:00"
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time % 3600) / 60);
+  const seconds = time % 60;
 
   function runOnce() {
-    if (!hasRunOnce) {
+    if (!hasRunOnce && !tenzies) {
       setHasRunOnce(true);
+    }
+    else if(tenzies && hasRunOnce){
+      setTime(0)
+      setHasRunOnce(false)
     }
   }
 
@@ -51,9 +54,6 @@ export default function App() {
     } else {
       setTenzies(false);
       setDice(allNewDice());
-      setSeconds(0);
-      setMinutes(0);
-      setHours(0);
       setCount(0)
     }
   }
@@ -70,47 +70,32 @@ export default function App() {
     );
   }
 
-  React.useEffect(() => {
-    if (hasRunOnce) {
-      const interval = setInterval(() => {
-        setSeconds((prevSeconds) => prevSeconds + 1);
+   useEffect(() => {
+    let interval
+    if (hasRunOnce && !tenzies) {
+       interval = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [hasRunOnce]);
+    
+  }, [hasRunOnce,tenzies]);
 
-  React.useEffect(() => {
-    if (seconds === 60) {
-      setMinutes((prevMinutes) => prevMinutes + 1);
-      setSeconds(0);
-    }
-    if (minutes === 60) {
-      setHours((prevHours) => prevHours + 1);
-      setMinutes(0);
-    }
-    if (seconds < 10 && minutes < 10 && hours < 10) {
-      setTime(`0${hours}:0${minutes}:0${seconds}`);
-    } else if (seconds >= 10 && minutes < 10 && hours < 10) {
-      setTime(`0${hours}:0${minutes}:${seconds}`);
-    } else if (seconds >= 10 && minutes >= 10 && hours < 10) {
-      setTime(`0${hours}:${minutes}:${seconds}`);
-    } else {
-      setTime(`${hours}:${minutes}:${seconds}`);
-    }
-  }, [seconds, minutes, hours]);
 
-  React.useEffect(() => {
+   useEffect(() => {
     const same = dice.every((die) => die.value === dice[0].value);
     const held = dice.every((die) => die.isHeld);
 
     if (same && held) {
       setTenzies(true);
-      setHasRunOnce(false);
       if(time < highScore){
         localStorage.setItem("highScore",time)
       }
     }
   }, [dice, time,highScore]);
+
+  const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
 
   const diceGrid = dice.map((die) => {
     return (
@@ -124,7 +109,7 @@ export default function App() {
       />
     );
   });
-  console.log(highScore)
+
   return (
     <main>
       {tenzies && <Confetti />}
@@ -133,7 +118,7 @@ export default function App() {
         Roll until all dice are the same. Click each dice to freeze it at its
         current value between rolls.
       </p>
-      <h2>Time Taken: {time}</h2>
+      <h2>{formattedTime}</h2>
       <h2>High Score: {highScore} </h2>
       <h2>Dice Rolls: {count}</h2>
       <div className="diceElements">{diceGrid}</div>
