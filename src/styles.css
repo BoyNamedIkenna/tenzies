@@ -5,7 +5,8 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #0B2434;
+  background: linear-gradient(to bottom, #2e2c7a, #23215c, #18153d, #0e0b20);
+
 }
 main{
   width: 570px; 
@@ -50,21 +51,19 @@ h2{
 .eachDie{
   width: 80px;
   height: 80px;
-  background-color: #FFFFFF;
-  font-size: 25px;
-  font-weight: bold;
   border-radius: 8px;
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.2s ease-in-out;
 }
 
 button{
   margin-top: 30px;
   width: 150px;
   height: 50px;
-  background-color: #5035FF;
+  background-color: #9333ea;
   color: #FFFFFF;
   font-size: 20px;
   font-weight: bold;
@@ -82,4 +81,19 @@ button:active {
 
 span{
   width: 100%;
+}
+
+.purple{
+  color: #9333ea;
+}
+
+
+@keyframes bounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-8px); }
+  60%  { transform: translateY(4px); }
+  100% { transform: translateY(0); }
+}
+.rolling {
+  animation: bounce 0.3s ease;
 }

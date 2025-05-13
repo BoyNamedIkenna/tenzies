@@ -14,6 +14,7 @@ export default function App() {
   const hours = Math.floor(time / 3600);
   const minutes = Math.floor((time % 3600) / 60);
   const seconds = time % 60;
+  const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
   function runOnce() {
     if (!hasRunOnce && !tenzies) {
@@ -94,7 +95,7 @@ export default function App() {
     }
   }, [dice, time,highScore]);
 
-  const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+ 
 
 
   const diceGrid = dice.map((die) => {
@@ -118,9 +119,9 @@ export default function App() {
         Roll until all dice are the same. Click each dice to freeze it at its
         current value between rolls.
       </p>
-      <h2>{formattedTime}</h2>
-      <h2>High Score: {highScore} </h2>
-      <h2>Dice Rolls: {count}</h2>
+      <h2 className="purple">{formattedTime}</h2>
+      <h2>High Score: <span className="purple">{highScore}</span> </h2>
+      <h2>Dice Rolls: <span className="purple">{count}</span></h2>
       <div className="diceElements">{diceGrid}</div>
       <button
         onClick={() => {
